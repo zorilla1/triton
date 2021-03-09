@@ -16,4 +16,23 @@ will decompress to
 ```
 Hello, World!Wor
 ```
-LENGTH must be at least 3 and POSITION must be at least 1. Copy commands use between 15 and 31 bits in the compressed stream, so no point in copying anything smaller than 3 characters.
+LENGTH must be at least 3 and POSITION must be at least 1. If you need to use a % character in your stream, specify it with %% (two percentage signs).
+
+Run-length encoding can be achieved in the following way
+```
+H%99,1;
+```
+will decompress to 100 H's and
+```
+Hello;%100,5;
+```
+will decompress into a bunch of "Hello"'s
+
+## Estimating output size
+
+* TIC-80, ZLib, and DEFLATE headers use a combined 51 bits.
+* ASCII characters use 8 bits each.
+* Extended ASCII bytes (144 and above, technically) use 9 bits.
+* Copy commands use between 15 and 31 bits. Smaller numbers have smaller encodings.
+
+Because copy commands use about 3 bytes minimum, no point in copying anything smaller than 3 characters.
