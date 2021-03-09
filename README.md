@@ -16,3 +16,4 @@ will decompress to
 ```
 Hello, World!Wor
 ```
+LENGTH must be at least 3 and POSITION must be at least 1. Copy commands use between 15 and 31 bits in the compressed stream, so no point in copying anything smaller than 3 characters.
