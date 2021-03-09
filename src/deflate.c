@@ -83,27 +83,27 @@ void write_length(FILE* f, unsigned int length)
 	else if (length < 16)
 	{
 		write_literal(f, (length >> 1) + 261);
-		write_bits(f, length, 1);
+		write_bits(f, length + 3, 1);
 	}
 	else if (length < 32)
 	{
 		write_literal(f, (length >> 2) + 265);
-		write_bits(f, length, 2);
+		write_bits(f, length + 3, 2);
 	}
 	else if (length < 64)
 	{
 		write_literal(f, (length >> 3) + 269);
-		write_bits(f, length, 3);
+		write_bits(f, length + 3, 3);
 	}
 	else if (length < 128)
 	{
 		write_literal(f, (length >> 4) + 273);
-		write_bits(f, length, 4);
+		write_bits(f, length + 3, 4);
 	}
 	else if (length < 255)
 	{
 		write_literal(f, (length >> 5) + 277);
-		write_bits(f, length, 5);
+		write_bits(f, length + 3, 5);
 	}
 	else if (length == 256)
 	{
@@ -124,14 +124,16 @@ void write_distance(FILE* f, unsigned int dist)
 	else if (dist < 8)
 	{
 		int e = 1;
-		int code = ((((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2) << e) | (dist & ((1 << e) - 1));
-		write_bits(f, code, e + 5);
+		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		write_bits(f, code, 5);
+		write_bits(f, extra_bits, e);
 	}
 	else if (dist < 16)
 	{
 		int e = 2;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -139,7 +141,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 3;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -147,16 +149,15 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 4;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
-
 	}
 	else if (dist < 128)
 	{
 		int e = 5;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -164,7 +165,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 6;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -172,7 +173,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 7;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -180,7 +181,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 8;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -188,7 +189,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 9;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -196,7 +197,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 10;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -204,7 +205,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 11;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -212,7 +213,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 12;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
@@ -220,7 +221,7 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 13;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = (dist & ((1 << e) - 1));
+		int extra_bits = ((dist + 1) & ((1 << e) - 1));
 		write_bits(f, code, 5);
 		write_bits(f, extra_bits, e);
 	}
