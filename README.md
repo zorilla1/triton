@@ -18,7 +18,7 @@ Hello, World!Wor
 ```
 LENGTH must be at least 3 and POSITION must be at least 1. If you need to use a % character in your stream, specify it with %% (two percentage signs).
 
-# Estimating output size
+## Estimating output size
 
 * TIC-80, ZLib, and DEFLATE headers use a combined 51 bits.
 * ASCII characters use 8 bits each.
