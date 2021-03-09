@@ -18,6 +18,16 @@ Hello, World!Wor
 ```
 LENGTH must be at least 3 and POSITION must be at least 1. If you need to use a % character in your stream, specify it with %% (two percentage signs).
 
+Run-length encoding can be achieved in the following way
+```
+H%99,1;
+```
+will decompress to 100 H's and
+```
+Hello;%100,5;
+```
+will decompress into a bunch of "Hello"'s
+
 ## Estimating output size
 
 * TIC-80, ZLib, and DEFLATE headers use a combined 51 bits.
