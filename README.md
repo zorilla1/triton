@@ -16,7 +16,7 @@ will decompress to
 ```
 Hello, World!Wor
 ```
-LENGTH must be at least 3 and POSITION must be at least 1. If you need to use a % character in your stream, specify it with %% (two percentage signs).
+LENGTH must be at least 3 and no more than 256. POSITION must be at least 1 and no more than 32768. If you need to use a % character in your stream, specify it with %% (two percentage signs).
 
 Run-length encoding can be achieved in the following way
 ```
