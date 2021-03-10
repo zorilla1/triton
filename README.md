@@ -24,9 +24,9 @@ H%99,1;
 ```
 will decompress to 100 H's and
 ```
-Hello;%100,5;
+Hello%100,5;
 ```
-will decompress into a bunch of "Hello"'s
+will decompress into 20 "Hello"'s
 
 ## Estimating output size
 
