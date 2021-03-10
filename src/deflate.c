@@ -28,6 +28,17 @@ void write_bits(FILE* f, unsigned int value, size_t len)
 	}
 }
 
+void write_bits_backward(FILE* f, unsigned int value, size_t len)
+{
+	int i;
+	for (i = 0; i < len; i++)
+	{
+		write_bit(f, value >> i);
+	}
+}
+
+
+
 void write_bit(FILE* f, unsigned int bit)
 {
 	if (size < 8)
@@ -75,6 +86,7 @@ void write_string(FILE* f, const char* str)
 void write_length(FILE* f, unsigned int length)
 {
 	assert(length >= 3);
+	assert(length <= 256);
 	length -= 3;
 	if (length < 8)
 	{
@@ -83,27 +95,27 @@ void write_length(FILE* f, unsigned int length)
 	else if (length < 16)
 	{
 		write_literal(f, (length >> 1) + 261);
-		write_bits(f, length + 3, 1);
+		write_bits_backward(f, length, 1);
 	}
 	else if (length < 32)
 	{
 		write_literal(f, (length >> 2) + 265);
-		write_bits(f, length + 3, 2);
+		write_bits_backward(f, length, 2);
 	}
 	else if (length < 64)
 	{
 		write_literal(f, (length >> 3) + 269);
-		write_bits(f, length + 3, 3);
+		write_bits_backward(f, length, 3);
 	}
 	else if (length < 128)
 	{
 		write_literal(f, (length >> 4) + 273);
-		write_bits(f, length + 3, 4);
+		write_bits_backward(f, length, 4);
 	}
 	else if (length < 255)
 	{
 		write_literal(f, (length >> 5) + 277);
-		write_bits(f, length + 3, 5);
+		write_bits_backward(f, length, 5);
 	}
 	else if (length == 256)
 	{
@@ -125,104 +137,104 @@ void write_distance(FILE* f, unsigned int dist)
 	{
 		int e = 1;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 16)
 	{
 		int e = 2;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 32)
 	{
 		int e = 3;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 64)
 	{
 		int e = 4;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 128)
 	{
 		int e = 5;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 256)
 	{
 		int e = 6;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 512)
 	{
 		int e = 7;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 1024)
 	{
 		int e = 8;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 2048)
 	{
 		int e = 9;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 4096)
 	{
 		int e = 10;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 8192)
 	{
 		int e = 11;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else if (dist < 16384)
 	{
 		int e = 12;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 	else
 	{
 		int e = 13;
 		int code = ((dist - (1 << (e + 1))) / (1 << e)) + 2 * e + 2;
-		int extra_bits = ((dist + 1) & ((1 << e) - 1));
+		int extra_bits = ((dist) & ((1 << e) - 1));
 		write_bits(f, code, 5);
-		write_bits(f, extra_bits, e);
+		write_bits_backward(f, extra_bits, e);
 	}
 }
